@@ -4,13 +4,21 @@ from cityview.models import *
 import urllib2
 import json
 
+# Command object to load city information from the specified URL.
+# python manage.py import
 class Command(NoArgsCommand):
     help = "Downloads the sba.gov city information for California into the database."
     data_url = 'http://api.sba.gov/geodata/city_links_for_state_of/CA.json'
     states = State.objects.all()
     counties = County.objects.all()
 
+
     def handle(self, *args, **options):
+        """
+        Loop through the data returned from the configured service and process all records marked as a city.
+        :param args:
+        :param options:
+        """
         json = self.get_json()
 
         for data_dict in json:
@@ -23,6 +31,9 @@ class Command(NoArgsCommand):
             print "\n"
 
     def get_json(self):
+        """"
+        Use the configured data_url to load the city JSON
+        """
         req = urllib2.Request(self.data_url)
         opener = urllib2.build_opener()
         handle = opener.open(req)
@@ -30,6 +41,11 @@ class Command(NoArgsCommand):
         return json.loads(handle.read())
 
     def add_city(self, data_dict, county):
+        """
+        Attempt to add a new city if it does not already exist.
+        :param data_dict:
+        :param county:
+        """
         name = data_dict['name']
         url = data_dict['url']
         lat = data_dict['primary_latitude']
@@ -45,6 +61,11 @@ class Command(NoArgsCommand):
         return city
 
     def add_county(self, data_dict, state):
+        """
+        Add a county object if it does not exist.
+        :param data_dict:
+        :param state:
+        """
         name = data_dict['county_name']
         if 'county_full_name' in data_dict:
             full_name = data_dict['county_full_name']
@@ -63,6 +84,10 @@ class Command(NoArgsCommand):
         return county
 
     def add_state(self, data_dict):
+        """
+        Add a state object if it does not exist.
+        :param data_dict:
+        """
         name = data_dict['state_name']
         abbrev = data_dict['state_abbreviation']
 
