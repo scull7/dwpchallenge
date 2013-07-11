@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="pull-right">
+        <ul class="nav nav-pills">
+            <li class="active">
+                <a href="{% if county %}/{% else %}#{% endif %}">Home</a>
+            </li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+
+    <h3>List of Cities</h3>
+
+    <ul class="breadcrumb">
+        <li class="active">Home<span class="divider">&gt;</span></li>
+        {% if county %}
+        <li><a href="/">California</a><span class="divider">&gt;</span></li>
+        <li class="active">{{ county.name }}</li>
+        {% else %}
+        <li class="active">California</li>
+        {% endif %}
+    </ul>
+
+
+    {% if cities %}
+    <table id="cities" class="table table-striped">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>County</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%  for city in cities %}
+            <tr>
+                <td>{{ city.name }}</td>
+                {% if county %}
+                <td>{{ city.county.name }}</td>
+                {%  else %}
+                <td><a href="/county/{{ city.county.id }}">{{ city.county.name }}</a></td>
+                {%  endif %}
+                <td>{{ city.latitude }}</td>
+                <td>{{ city.longitude }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        {%  if is_paginated %}
+        <div class="pagination pagination-centered">
+            <ul>
+                {% if page_obj.has_previous  %}
+                <li class="prev"><a href="/?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="prev disabled"><a href="#">&laquo;</a></li>
+                {% endif %}
+
+                {% for pagenum in page_obj.paginator.page_range %}
+                <li {% if page_obj.number == pagenum %}class="active"{% endif %}>
+                    <a href="{{ url_suffix|default:"?page=" }}{{ pagenum }}">{{ pagenum }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="next">
+                    <a href="{{ url_suffix|default:"?page=" }}{{ page_obj.next_page_number }}">&raquo;</a>
+                </li>
+                {% else %}
+                <li class="next disabled"><a href="#">&raquo;</a></li>
+                {%  endif %}
+            </ul>
+        </div>
+        {%  endif  %}
+    {% endif %}
+
+{% endblock %}

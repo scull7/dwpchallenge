@@ -1,3 +1,6 @@
+from os import path
+PROJECT_PATH = path.realpath(__file__)
+
 # Django settings for dwpchallenge project.
 
 DEBUG = True
@@ -61,7 +64,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = path.join(path.dirname(PROJECT_PATH), 'build')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -80,7 +83,9 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
+
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '*%r7)51$=f%_=6z+n3g5v3$^1-chzp!nhs^#_x)t%%r*n#mjaz'
@@ -122,10 +127,15 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    # Django static file compression and combination.
+    'compressor',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'cityview',
 )
+
+#URL to pass unauthenticated users to.
+LOGIN_URL = '/login'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

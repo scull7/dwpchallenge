@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static "css/form-signin.css" %}" meda="all">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <form class="form-signin" method="POST" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> Your username and password did not match. Please try again.
+        </div>
+        {%  endif %}
+
+        <input type="text" class="input-block-level" name="{{ form.username.name }}" placeholder="User Name">
+        <input type="password" class="input-block-level" name="{{ form.password.name }}" placeholder="Password">
+
+        <button class="btn btn-large btn-primary" type="submit">Sign In</button>
+        <input type="hidden" name="next" value="{{ next|default:"/" }}" />
+    </form>
+</div>
+{% endblock %}
