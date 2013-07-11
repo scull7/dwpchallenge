@@ -1,5 +1,5 @@
 from os import path
-PROJECT_PATH = path.realpath(path.dirname(__file__))
+PROJECT_PATH = path.realpath(path.dirname(path.dirname(__file__)))
 
 # Django settings for dwpchallenge project.
 
